@@ -4,7 +4,7 @@ import login from './images/logo.png'
 import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { reqLogin } from '../../api';
-import { useNavigate, Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import memoryUtils from '../../utils/memoryUtils';
 import storageUtils from '../../utils/storageUtils';
 
@@ -21,11 +21,11 @@ function Login() {
     useEffect(() => {
         const user = memoryUtils.user
         if (user && user._id) {
-        //重定向admin页面
-          return navigate('/') 
+            //重定向admin页面
+            return navigate('/')
         }
         // 解绑   componentWillUnmount
-        return () => {console.log('你离开了登录页面')}
+        return () => { console.log('你离开了登录页面') }
     }, [])
 
     const onFinish = async (values) => {
