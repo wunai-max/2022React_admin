@@ -15,9 +15,8 @@ function App() {
   return ( 
    <BrowserRouter>
    <Routes> {/*只匹配其中一个*/}
-      <Route exact path='/' element={<Admin/>}></Route>
-      <Route exact path='/login' element={<Login/>}></Route>
-      <Route exact path="*" element={<Navigate to="/" />} />
+      <Route  path='/*' element={<Admin/>}></Route>
+      <Route  path='/login' element={<Login/>}></Route>
    </Routes>
    </BrowserRouter>
   );

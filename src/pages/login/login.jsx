@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import './login.less'
-import login from './images/logo.png'
+import login from '../../assets/images/logo.png'
 import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { reqLogin } from '../../api';
