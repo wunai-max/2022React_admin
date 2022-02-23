@@ -40,8 +40,8 @@ function Admin() {
                 <LeftNav />
             </Sider>
             <Layout>
-                <Header>Header</Header>
-                <Content style={{ backgroundColor: 'white' }}>
+                <Header></Header>
+                <Content style={{margin:20,backgroundColor: 'white' }}>
                     <Routes>
                         <Route path='/home' element={<Home />}></Route>
                         <Route path='/category' element={<Category />}></Route>
