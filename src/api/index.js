@@ -19,7 +19,7 @@ export const reqLogin = (username, password) => ajax(BASE + '/login', {
 //添加用户
 export const reqAddUser = (user) => ajax(BASE + '/manage/user/add', user, 'POST')
 
-/*通过 jsonp 请求获取天气信息  解决GET类型跨域 */  
+/*通过 jsonp 请求获取天气信息  解决GET类型跨域 */
 // export function reqWeather(city) {
 //     const url = `https://restapi.amap.com/v3/weather/weatherInfo?key=d679a3a2b367acc60ed882ba0eb9603d&city=${city}`
 //     return new Promise((resolve, reject) => {
@@ -38,3 +38,24 @@ export const reqAddUser = (user) => ajax(BASE + '/manage/user/add', user, 'POST'
 
 // key=d679a3a2b367acc60ed882ba0eb9603d&city=${city}
 export const reqWeather = (city) => ajax('https://restapi.amap.com/v3/weather/weatherInfo', city, 'GET')
+
+
+//获取一级、二级分类列表
+
+export const reqClassifyList = (parentId) => ajax(BASE + '/manage/category/list', {
+    parentId
+}) //形参默认值，不用些GET
+
+//添加分类列表
+
+export const reqAddClassify = (categoryName, parentId) => ajax(BASE + '/manage/category/add', {
+    categoryName,
+    parentId
+}, 'POST')
+
+//更新分类名称
+
+export const reqUpDateClassify = (categoryId, categoryName) => ajax(BASE + '/manage/category/update', {
+    categoryId,
+    categoryName
+}, 'POST')
