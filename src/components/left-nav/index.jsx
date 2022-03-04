@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom'
 import logo from '../../assets/images/logo.png'
 import { Menu } from 'antd';
 import menuList from '../../config/menuConfig';
+import { useSetState } from '../hooks';
 
 
 const { SubMenu } = Menu;
@@ -14,15 +15,25 @@ function LeftNav(props) {
   let data = location.pathname  //获取路由自动选中
 
 
-  const [state, setState] = useState({
+  const [state, setState] = useSetState({
     openKey: '',
+    data: ''
   })
 
   useEffect(() => {
+    if (data.indexOf('/product') === 0) {
+      setState({
+        data: '/product'
+      })
+    } else {
+      setState({
+        data: data
+      })
+    }
     return () => {
       // componentWillUnmount
     }
-  }, [])
+  }, [data])
 
   const getMenuNodes = useCallback((menuList) => {  //对比变量是否改变
     return menuList.map(item => {
@@ -61,7 +72,7 @@ function LeftNav(props) {
         <h1>react后台</h1>
       </Link>
       <Menu
-        defaultSelectedKeys={[data]} //默认选中 可以选中多个值
+        selectedKeys={[state.data]} //默认选中 可以选中多个值
         defaultOpenKeys={[state.openKey]}
         mode="inline"
         theme="dark"
@@ -69,7 +80,7 @@ function LeftNav(props) {
         {getMenuNodes(menuList)}
       </Menu>
     </div>
-  ), [state.openKey, data])
+  ), [state.openKey, state.data])
 }
 
 

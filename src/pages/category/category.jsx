@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Button, Card, message, Table, Modal } from 'antd';
 import {
   PlusOutlined,
   ArrowRightOutlined
 } from '@ant-design/icons';
 import LinkButton from '../../components/link-button'
-import { reqClassifyList } from '../../api';
+import { reqAddClassify, reqClassifyList, reqUpDateClassify } from '../../api';
 import { useSetState } from '../../components/hooks';
 import AddFrom from './add-from';
+import UpdateFrom from './update-form';
+
 
 export default function Category() {
-
 
   const [state, setState] = useSetState({
     classifyList: [],
@@ -19,14 +20,19 @@ export default function Category() {
     parentId: '0',
     parentName: '',
     title: '',
-    isModalVisible: 0
+    isModalVisible: 0,
+    categoryObj: {},
   })
+
+  let formRef = null;
+  let updateRef = null;
 
   useEffect(() => {
     getClassList();
   }, [state.parentId])
 
-  const getClassList = async () => {
+  const getClassList = async (parentIdNum) => {
+    const parentId = parentIdNum || state.parentId
     setState({
       loading: true
     })
@@ -35,7 +41,7 @@ export default function Category() {
       loading: false
     })
     if (list.status === 0) {
-      if (state.parentId === '0') {
+      if (parentId === '0') {
         setState({
           classifyList: list.data,
           title: '一级分类列表'
@@ -67,13 +73,38 @@ export default function Category() {
     })
   }
 
-  const handleAddOk = () => {
+  const handleAddOk = async () => {
     if (state.isModalVisible === 1) {
-      console.log(111);
+      formRef?.current?.submit?.()
+      let params = formRef?.current?.getFieldsValue?.('categoryObj')
+      if (params.categoryName!=='') {
+        let res = await reqAddClassify(params.categoryName, params.categoryId);
+        if (res.status === 0) {
+          message.success('添加成功')
+          if (params.categoryId === state.parentId) {
+            getClassList();
+          } else if (params.parentId === '0') {
+            getClassList('0');
+          }
+          handleCancel();
+        } else {
+          message.error('添加失败，请重试！')
+        }
+      }
     } else if (state.isModalVisible === 2) {
-      console.log(222);
+      updateRef?.current?.submit?.()
+      let params = updateRef?.current?.getFieldsValue?.('categoryObj')
+      if (params.categoryName!=='') {
+        let res = await reqUpDateClassify(state.categoryObj._id, params.categoryName);
+        if (res.status === 0) {
+          message.success('修改成功')
+          getClassList();
+          handleCancel();
+        } else {
+          message.error('修改失败，请重试！')
+        }
+      }
     }
-    handleCancel();
   };
 
   const handleCancel = () => {
@@ -93,7 +124,8 @@ export default function Category() {
         <span>
           <LinkButton onClick={() => {
             setState({
-              isModalVisible: 2
+              isModalVisible: 2,
+              categoryObj: item,
             })
           }}>修改分类</LinkButton>
           {state.parentId === '0' ? (
@@ -120,13 +152,37 @@ export default function Category() {
         pagination={{ defaultPageSize: 5, showQuickJumper: true }}
         loading={state.loading}
       />
-      <Modal title="添加分类" visible={state.isModalVisible === 1} onOk={handleAddOk} onCancel={handleCancel}>
-      <AddFrom></AddFrom>
+      <Modal
+        title="添加分类"
+        visible={state.isModalVisible === 1}
+        onOk={handleAddOk}
+        onCancel={handleCancel}
+        okText={'确认'}
+        cancelText={'取消'}
+      >
+        <AddFrom
+          setForm={(form) => {
+            formRef = form
+          }}
+          classifyList={state.classifyList}
+          parentId={state.parentId}
+        >
+        </AddFrom>
       </Modal>
-      <Modal title="更新分类" visible={state.isModalVisible === 2} onOk={handleAddOk} onCancel={handleCancel}>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+      <Modal
+        title="更新分类"
+        visible={state.isModalVisible === 2}
+        onOk={handleAddOk}
+        onCancel={handleCancel}
+        okText={'确认'}
+        cancelText={'取消'}
+      >
+        <UpdateFrom
+          setForm={(form) => {
+            updateRef = form
+          }}
+          categoryName={state.categoryObj.name}>
+        </UpdateFrom>
       </Modal>
     </Card>
   )

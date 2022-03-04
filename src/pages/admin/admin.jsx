@@ -35,7 +35,7 @@ function Admin() {
     }, [])
 
     return (
-        <Layout style={{ height: '100%' }}>
+        <Layout style={{ minHeight: '100%' }}>
             <Sider>
                 <LeftNav />
             </Sider>
@@ -50,7 +50,7 @@ function Admin() {
                         <Route path='/charts/bar' element={<Bar />}></Route>
                         <Route path='/user' element={<User />}></Route>
                         <Route path='/role' element={<Role />}></Route>
-                        <Route path='/Product' element={<Product />}></Route>
+                        <Route path='/Product/*' element={<Product />}></Route>
                     </Routes>
                 </Content>
                 <Footer style={{ textAlign: 'center', color: '#aaaaaa' }}>推荐使用谷歌浏览器， 可以获得更佳页面操作体验</Footer>

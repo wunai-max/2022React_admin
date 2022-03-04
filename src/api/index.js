@@ -59,3 +59,57 @@ export const reqUpDateClassify = (categoryId, categoryName) => ajax(BASE + '/man
     categoryId,
     categoryName
 }, 'POST')
+
+
+//获取商品分页列表
+export const reqProducts = (pageNum, pageSize) => ajax(BASE + '/manage/product/list', {
+    pageNum,
+    pageSize
+}, )
+
+//搜索商品分页列表  seachType 搜索类型 productName/productDesc 两种值
+export const reqSearchProducts = ({
+        pageNum,
+        pageSize,
+        searchName,
+        searchType
+    }) =>
+    ajax(BASE + '/manage/product/search', {
+        pageNum,
+        pageSize,
+        [searchType]: searchName,
+    }, )
+
+//ID获取分类
+export const reqCategory = (categoryId) => ajax(BASE + '/manage/category/info', {
+    categoryId
+}) //形参默认值，不用些GET
+
+//更新商品状态
+export const reqUpdateStatus = ({
+    productId,
+    status
+}) => ajax(BASE + '/manage/product/updateStatus', {
+    productId,
+    status,
+}, 'POST')
+
+//删除图片
+export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', {
+    name
+}, 'POST')
+
+//添加商品和修改
+export const reqAddOrUpdateProduct = (product) => ajax(BASE + '/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST')
+
+//修改商品
+// export const reqUpdateProduct = (product) => ajax(BASE + '/manage/product/update', product, 'POST')
+
+//获取角色信息
+export const reqRoleList = () => ajax(BASE + '/manage/role/list', {}) 
+//添加角色
+export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add', {roleName},'POST') 
+
+//更新角色
+export const reqUpdateRole = (params) => ajax(BASE + '/manage/role/update', params,'POST') 
+
