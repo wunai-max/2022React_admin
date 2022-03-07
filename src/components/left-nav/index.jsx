@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import './index.less'
 import { Link, useLocation } from 'react-router-dom'
-import logo from '../../assets/images/logo.png'
+import logo from '../../assets/images/logoMan.png'
 import { Menu } from 'antd';
 import menuList from '../../config/menuConfig';
 import { useSetState } from '../hooks';
