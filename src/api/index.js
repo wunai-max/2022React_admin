@@ -106,10 +106,23 @@ export const reqAddOrUpdateProduct = (product) => ajax(BASE + '/manage/product/'
 // export const reqUpdateProduct = (product) => ajax(BASE + '/manage/product/update', product, 'POST')
 
 //获取角色信息
-export const reqRoleList = () => ajax(BASE + '/manage/role/list', {}) 
+export const reqRoleList = () => ajax(BASE + '/manage/role/list', {})
 //添加角色
-export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add', {roleName},'POST') 
+export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add', {
+    roleName
+}, 'POST')
 
 //更新角色
-export const reqUpdateRole = (params) => ajax(BASE + '/manage/role/update', params,'POST') 
+export const reqUpdateRole = (params) => ajax(BASE + '/manage/role/update', params, 'POST')
 
+
+//获取用户列表
+export const reqUserList = () => ajax(BASE + '/manage/user/list', {})
+
+//更新用户
+export const reqUpdateUser = (params) => ajax(BASE + '/manage/user/update', params, 'POST')
+
+//删除用户
+export const reqDeleteUser = (userId) => ajax(BASE + '/manage/user/delete', {
+    userId
+}, 'POST')

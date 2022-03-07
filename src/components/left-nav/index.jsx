@@ -5,6 +5,7 @@ import logo from '../../assets/images/logo.png'
 import { Menu } from 'antd';
 import menuList from '../../config/menuConfig';
 import { useSetState } from '../hooks';
+import memoryUtils from '../../utils/memoryUtils';
 
 
 const { SubMenu } = Menu;
@@ -35,34 +36,50 @@ function LeftNav(props) {
     }
   }, [data])
 
+  const hasAuth = (item) => {
+    //判断当前登录用户对item是否有权限
+    //如何是admin直接通过
+    //如果是公开的不是设置权限
+    const { key, isPublic } = item
+    const menus = memoryUtils.user.role.menus
+    const username = memoryUtils.user.username
+    if (username === 'admin' || isPublic || menus.indexOf(key) !== -1) {
+      return true
+    } else if(item.children){// 4. 如果当前用户有此item的某个子item的权限
+      return !!item.children.find(child=>menus.indexOf(child.key)!==-1)   //强制转换类型 ！！
+    }
+  }
+
   const getMenuNodes = useCallback((menuList) => {  //对比变量是否改变
     return menuList.map(item => {
-      if (!item.children) {
-        return (
-          <Menu.Item key={item.key} icon={item.icon}>
-            <Link to={item.key}>
-              {item.title}
-            </Link>
-          </Menu.Item>
-        )
-      } else {
-        // 如果当前请求路由与当前菜单的某个子菜单的 key 匹配, 将菜单的 key 保存为 openKey
-        if (item.children.find(cItem => data.indexOf(cItem.key) === 0)) {
-          setState({
-            openKey: item.key
-          })
-        }
 
-        return (
-          <SubMenu key={item.key} icon={item.icon} title={item.title}>
-            {getMenuNodes(item.children)}
-          </SubMenu>
-        )
+      //如果
+      if (hasAuth(item)) {
+        if (!item.children) {
+          return (
+            <Menu.Item key={item.key} icon={item.icon}>
+              <Link to={item.key}>
+                {item.title}
+              </Link>
+            </Menu.Item>
+          )
+        } else {
+          // 如果当前请求路由与当前菜单的某个子菜单的 key 匹配, 将菜单的 key 保存为 openKey
+          if (item.children.find(cItem => data.indexOf(cItem.key) === 0)) {
+            setState({
+              openKey: item.key
+            })
+          }
+
+          return (
+            <SubMenu key={item.key} icon={item.icon} title={item.title}>
+              {getMenuNodes(item.children)}
+            </SubMenu>
+          )
+        }
       }
     })
   }, [])//循环展示导航列表
-
-
 
 
   return useMemo(() => (

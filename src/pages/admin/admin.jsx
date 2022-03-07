@@ -25,7 +25,7 @@ function Admin() {
     useEffect(() => {
         console.log('admin初始化只执行一次')
 
-        if (!user._id) {
+        if (!user || !user._id) {
             return navigate('/login')
         }
         return () => {
@@ -41,7 +41,7 @@ function Admin() {
             </Sider>
             <Layout>
                 <Header></Header>
-                <Content style={{margin:20,backgroundColor: 'white' }}>
+                <Content style={{ margin: 20, backgroundColor: 'white' }}>
                     <Routes>
                         <Route path='/home' element={<Home />}></Route>
                         <Route path='/category' element={<Category />}></Route>

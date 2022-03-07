@@ -147,6 +147,7 @@ export default function ProductHome() {
                 columns={columns}
                 loading={state.loading}
                 pagination={{
+                    current:state.pageNum,
                     total: state.total,
                     defaultPageSize: constants.PAGE_SIZE,
                     showQuickJumper: true,

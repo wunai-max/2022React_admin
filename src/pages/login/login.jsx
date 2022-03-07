@@ -108,7 +108,7 @@ function Login() {
                                 { max: 12, message: '用户名必须小于 12 位' },
                                 { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名必须是英文、数组或下划线 组成' }
                             ]}
-                            initialValue='admin'
+                            initialValue=''
                         >
                             <Input prefix={<UserOutlined className="site-form-item-icon" style={{ color: '#eee' }} />} placeholder="用户名" />
                         </Form.Item>

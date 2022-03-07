@@ -8,10 +8,13 @@ import memoryUtils from "../../utils/memoryUtils"
 import AddFrom from './add-form';
 import Modal from 'antd/lib/modal/Modal';
 import AuthFrom from './auth-form';
+import { useNavigate } from 'react-router-dom';
+import storageUtils from '../../utils/storageUtils';
 
 export default function Role() {
   let formRef = null;
   const authRef = useRef(null);
+  const navigate = useNavigate()
   const [state, setState] = useSetState({
     isShowAdd: false,
     isShowAuth: false,
@@ -100,13 +103,22 @@ export default function Role() {
     role.auth_name = memoryUtils.user.username
     // console.log('>>>>!11', role);
     let res = await reqUpdateRole(role);
-    console.log('>>>>>>>>', res);
+    // console.log('>>>>>>>>', res);
     if (res.status === 0) {
-      message.success('设置角色权限成功')
-      setState({
-        roles: [...state.roles],
-        isShowAuth: false
-      })
+     
+      //如果当前更新的自己角色权限强制退出
+      if (role._id === memoryUtils.user.role._id) {
+        message.info('设置角色权限请重新登录')
+        storageUtils.removeUser()
+        memoryUtils.user={};
+        navigate('/login')
+      } else {
+        message.success('设置角色权限成功')
+        setState({
+          roles: [...state.roles],
+          isShowAuth: false
+        })
+      }
     } else {
       message.error('设置角色权限失败')
     }

@@ -18,6 +18,7 @@ const menuList = [{
         title: '首页', // 菜单标题名称 
         key: '/home', // 对应的 path 
         icon: <HomeOutlined />, // 图标名称 
+        isPublic:true,//公开的 不控制权限
     },
     {
         title: '商品',
