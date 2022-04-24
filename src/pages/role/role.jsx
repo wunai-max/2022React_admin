@@ -10,8 +10,10 @@ import Modal from 'antd/lib/modal/Modal';
 import AuthFrom from './auth-form';
 import { useNavigate } from 'react-router-dom';
 import storageUtils from '../../utils/storageUtils';
+import { connect } from 'react-redux';
+import { logout } from '../../redux/actions'
 
-export default function Role() {
+function Role(props) {
   let formRef = null;
   const authRef = useRef(null);
   const navigate = useNavigate()
@@ -100,18 +102,20 @@ export default function Role() {
     let params = authRef?.current?.getmenus?.()
     role.menus = params
     role.auth_time = Date.now()
-    role.auth_name = memoryUtils.user.username
+    role.auth_name = props.user.username
     // console.log('>>>>!11', role);
     let res = await reqUpdateRole(role);
     // console.log('>>>>>>>>', res);
     if (res.status === 0) {
-     
+
       //如果当前更新的自己角色权限强制退出
-      if (role._id === memoryUtils.user.role._id) {
+      if (role._id === props.user.role._id) {
         message.info('设置角色权限请重新登录')
-        storageUtils.removeUser()
-        memoryUtils.user={};
-        navigate('/login')
+        // storageUtils.removeUser()
+        // memoryUtils.user = {};
+        // navigate('/login')
+        //redux调用
+         props.logout()
       } else {
         message.success('设置角色权限成功')
         setState({
@@ -180,3 +184,7 @@ export default function Role() {
     </Card>
   )
 }
+export default connect(
+  state => ({ user: state.user }),
+  { logout }
+)(Role)

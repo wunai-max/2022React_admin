@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react'
 import './login.less'
-import login from '../../assets/images/logoMan.png'
+import loginimg from '../../assets/images/logoMan.png'
 import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { reqLogin } from '../../api';
+// import { reqLogin } from '../../api';
 import { useNavigate } from 'react-router-dom'
-import memoryUtils from '../../utils/memoryUtils';
-import storageUtils from '../../utils/storageUtils';
+// import memoryUtils from '../../utils/memoryUtils';
+// import storageUtils from '../../utils/storageUtils';
+import { connect } from 'react-redux'
+import {login} from '../../redux/actions'
 
-function Login() {
+
+function Login(props) {
 
     //react-router-dom v5用useHistory()进行路由跳转 
     // const history = useHistory()
@@ -19,14 +22,14 @@ function Login() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        const user = memoryUtils.user
+        const user = props.user
         if (user && user._id) {
             //重定向admin页面
             return navigate('/')
         }
         // 解绑   componentWillUnmount
         return () => { console.log('你离开了登录页面') }
-    }, [])
+    }, [props])
 
     const onFinish = async (values) => {
 
@@ -51,19 +54,25 @@ function Login() {
         3.哪里写async
            await所在函数（最近的）定义在左侧     
           */
-        const result = await reqLogin(username, password)
-        console.log('请求成功', result);
-        if (result.status === 0) {
-            message.success('登录成功')
-            //保存 user
-            const user = result.data
-            memoryUtils.user = user //存到内存中
-            storageUtils.saveUser(user) //存到缓存 localStorage
 
-            navigate("/", { replace: true });
-        } else {
-            message.error(result.msg)
-        }
+        //正常调用
+        // const result = await reqLogin(username, password)
+        // console.log('请求成功', result);
+        // if (result.status === 0) {
+        //     message.success('登录成功')
+        //     //保存 user
+        //     const user = result.data
+        //     memoryUtils.user = user //存到内存中
+        //     storageUtils.saveUser(user) //存到缓存 localStorage
+
+        //     navigate("/", { replace: true });
+        // } else {
+        //     message.error(result.msg)
+        // }
+
+        //redux异步调用
+        props.login(username, password)
+
     }
 
     const onValuesChange = (values) => { };
@@ -84,7 +93,7 @@ function Login() {
     return (
         <div className='login'>
             <header className='login-header'>
-                <img src={login} alt="login" />
+                <img src={loginimg} alt="login" />
                 <h1>React项目:后台管理系统</h1>
             </header>
             <section className='login-content'>
@@ -137,4 +146,7 @@ function Login() {
     )
 }
 
-export default Login; 
+export default connect(
+    state => ({ user: state.user }),
+    { login }
+)(Login); 

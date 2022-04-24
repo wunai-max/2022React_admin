@@ -5,15 +5,17 @@ import { Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import './index.less'
 import LinkButton from '../link-button';
-import memoryUtils from '../../utils/memoryUtils';
-import storageUtils from '../../utils/storageUtils';
+// import memoryUtils from '../../utils/memoryUtils';
+// import storageUtils from '../../utils/storageUtils';
 import { useLocation, useNavigate } from 'react-router-dom';
-import menuList from '../../config/menuConfig';
+import { connect } from 'react-redux'
+// import menuList from '../../config/menuConfig';
+import { logout } from '../../redux/actions'; 
 
 const { confirm } = Modal;
 let timer = null
 
-export default function Header() {
+function Header(props) {
 
   let location = useLocation()
   let data = location.pathname  //获取路由
@@ -23,14 +25,14 @@ export default function Header() {
     lives: {},
   })
   const [time, setTime] = useState(formateDate(Date.now()))
-  const [title, setTitle] = useState('')
-  const [username,setUsername]=useState('')
+  // const [title, setTitle] = useState('')
+  const [username, setUsername] = useState('')
 
   useEffect(() => {
     getWeather();
     getTime();
-    getTitle();
-    setUsername(memoryUtils.user.username);
+    // getTitle();
+    setUsername(props.user.username);
     return () => {
       clearInterval(timer)
     }
@@ -55,21 +57,21 @@ export default function Header() {
     }, 1000);
   }, [])
 
-  const getTitle = useCallback(() => {
-    menuList.forEach(item => {
-      if (item.key === data) {
-        setTitle(item.title)
-      } else if (item.children) {
-        // 在所有子item中查找匹配的
-        const cItem = item.children.find(cItem => data.indexOf(cItem.key) === 0)
-        // 如果有值才说明有匹配的
-        if (cItem) {
-          // 取出它的title
-          setTitle(cItem.title)
-        }
-      }
-    })
-  }, [data])
+  // const getTitle = useCallback(() => {
+  //   menuList.forEach(item => {
+  //     if (item.key === data) {
+  //       setTitle(item.title)
+  //     } else if (item.children) {
+  //       // 在所有子item中查找匹配的
+  //       const cItem = item.children.find(cItem => data.indexOf(cItem.key) === 0)
+  //       // 如果有值才说明有匹配的
+  //       if (cItem) {
+  //         // 取出它的title
+  //         setTitle(cItem.title)
+  //       }
+  //     }
+  //   })
+  // }, [data])
 
   const quitLog = useCallback(() => {
     confirm({
@@ -79,12 +81,14 @@ export default function Header() {
       okText: '确认',
       cancelText: '取消',
       onOk: () => {
-        // 删除保存的user数据
-        storageUtils.removeUser()
-        memoryUtils.user = {}
+        //  // 删除保存的user数据
+        //  storageUtils.removeUser()
+        //  memoryUtils.user = {}
+ 
+        //  // 跳转到login
+        //  navigate('/login')
 
-        // 跳转到login
-        navigate('/login')
+        props.logout();  //使用redux
       }
     });
   }, [])
@@ -97,7 +101,7 @@ export default function Header() {
       </div>
       <div className="header-bottom">
         <div className="header-bottom-left">
-          {title}
+          {props.headTitle}
         </div>
         <div className="header-bottom-right">
           <span>{time}&nbsp;&nbsp;</span>
@@ -107,5 +111,10 @@ export default function Header() {
         </div>
       </div>
     </div>
-  ), [state.lives, time, title,username])
+  ), [state.lives, time, username])
 }
+
+export default connect(
+  state => ({ headTitle: state.headTitle, user: state.user }),
+  {logout}
+)(Header)

@@ -17,7 +17,7 @@ function App() {
    <Routes> {/*只匹配其中一个*/}
       <Route  path='/*' element={<Admin/>}></Route>
       <Route  path='/login' element={<Login/>}></Route>
-      <Route  path='/' element={<Navigate to="/home" />}></Route> {/*重定向*/}
+      <Route  path='/' element={<Navigate to="/home" />}></Route>
    </Routes>
    </BrowserRouter>
   );

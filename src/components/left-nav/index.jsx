@@ -6,6 +6,8 @@ import { Menu } from 'antd';
 import menuList from '../../config/menuConfig';
 import { useSetState } from '../hooks';
 import memoryUtils from '../../utils/memoryUtils';
+import { connect } from 'react-redux';
+import { setHeadTitle } from '../../redux/actions'
 
 
 const { SubMenu } = Menu;
@@ -41,12 +43,12 @@ function LeftNav(props) {
     //如何是admin直接通过
     //如果是公开的不是设置权限
     const { key, isPublic } = item
-    const menus = memoryUtils.user.role.menus
-    const username = memoryUtils.user.username
+    const menus = props.user.role.menus
+    const username = props.user.username
     if (username === 'admin' || isPublic || menus.indexOf(key) !== -1) {
       return true
-    } else if(item.children){// 4. 如果当前用户有此item的某个子item的权限
-      return !!item.children.find(child=>menus.indexOf(child.key)!==-1)   //强制转换类型 ！！
+    } else if (item.children) {// 4. 如果当前用户有此item的某个子item的权限
+      return !!item.children.find(child => menus.indexOf(child.key) !== -1)   //强制转换类型 ！！
     }
   }
 
@@ -56,9 +58,16 @@ function LeftNav(props) {
       //如果
       if (hasAuth(item)) {
         if (!item.children) {
+          //当前要显示的item
+          if (item.key === data || data.indexOf(item.key) === 0) {
+            //更新redux状态
+            props.setHeadTitle(item.title)
+          }
           return (
             <Menu.Item key={item.key} icon={item.icon}>
-              <Link to={item.key}>
+              <Link to={item.key} onClick={() => {
+                props.setHeadTitle(item.title)
+              }}>
                 {item.title}
               </Link>
             </Menu.Item>
@@ -79,7 +88,7 @@ function LeftNav(props) {
         }
       }
     })
-  }, [])//循环展示导航列表
+  }, [data])//循环展示导航列表
 
 
   return useMemo(() => (
@@ -102,4 +111,7 @@ function LeftNav(props) {
 
 
 
-export default LeftNav
+export default connect(
+  state => ({ user: state.user }),
+  { setHeadTitle }
+)(LeftNav)
